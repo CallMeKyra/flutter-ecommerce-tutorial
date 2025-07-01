@@ -78,11 +78,11 @@ Kita akan mengatur folder proyek untuk menjaga kebersihan kode.
     │   │   ├── product_detail_page.dart
     │   │   └── cart_page.dart
     │   ├── providers/             # -> Kelas-kelas Provider untuk manajemen state
-    │   │   ├── auth_provider.dart #    (Manajemen state autentikasi pengguna)
-    │   │   └── cart_provider.dart #    (Manajemen state keranjang belanja)
+    │   │   ├── auth_provider.dart # (Manajemen state autentikasi pengguna)
+    │   │   └── cart_provider.dart # (Manajemen state keranjang belanja)
     │   ├── services/              # -> Kelas-kelas untuk layanan eksternal (API, database, dll.)
-    │   │   └── api_service.dart   #    (Contoh layanan untuk interaksi API)
-    │   └── main.dart              # -> Titik masuk utama aplikasi, konfigurasi Provider, dan routing
+    │   │   └── api_service.dart   # (Contoh layanan untuk interaksi API)
+    │   └── main.dart              # -> Titik masuk utama aplikasi, konfigurasi Provider, dan routing.
     ├── linux/                     # Proyek spesifik Linux
     ├── macos/                     # Proyek spesifik macOS
     ├── test/                      # File untuk unit dan widget testing
@@ -729,7 +729,7 @@ Kita akan membuat halaman Login, Daftar Produk, Detail Produk, dan Keranjang.
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/product.dart';
-import '../providers/cart_provider.dart'; // Path disesuaikan
+import '../providers/cart_provider.dart';
 
 class ProductDetailPage extends StatelessWidget {
   final Product product;
