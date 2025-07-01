@@ -45,9 +45,9 @@ Tutorial ini akan memandu Anda langkah demi langkah dalam membuat aplikasi e-com
     dependencies:
       flutter:
         sdk: flutter
-      provider: ^6.0.5 # Untuk manajemen state
-      http: ^1.1.0     # Untuk mengambil data dari API
-      collection: ^1.18.0 # Untuk firstWhereOrNull pada list
+      provider: ^6.0.5
+      http: ^1.1.0
+      collection: ^1.18.0
       cupertino_icons: ^1.0.2
     ```
     Simpan file `pubspec.yaml` dan jalankan di terminal:
@@ -60,13 +60,42 @@ Tutorial ini akan memandu Anda langkah demi langkah dalam membuat aplikasi e-com
 Kita akan mengatur folder proyek untuk menjaga kebersihan kode.
 
 1.  **Buat Struktur Folder:**
-    Di dalam folder `lib`, buat folder-folder berikut:
+    Berikut adalah struktur folder proyek Flutter Anda secara detail, yang digunakan untuk mengorganisir kode:
+
     ```
-    lib/
-    ├── models/
-    ├── providers/
-    ├── page/
-    └── ... (file main.dart dan lainnya)
+    your_project_root/
+    ├── .vscode/                   # Konfigurasi Visual Studio Code
+    ├── android/                   # Proyek spesifik Android
+    ├── build/                     # Direktori output hasil build aplikasi
+    ├── ios/                       # Proyek spesifik iOS
+    ├── lib/                       # Source code utama aplikasi Flutter Anda
+    │   ├── models/                # -> Definisi data model aplikasi
+    │   │   ├── product.dart       #    (Struktur data produk dari API)
+    │   │   └── cart_item.dart     #    (Struktur data item di keranjang belanja)
+    │   ├── page/                  # -> Halaman-halaman UI utama aplikasi
+    │   │   ├── login_page.dart
+    │   │   ├── product_list_page.dart
+    │   │   ├── product_detail_page.dart
+    │   │   └── cart_page.dart
+    │   ├── providers/             # -> Kelas-kelas Provider untuk manajemen state
+    │   │   ├── auth_provider.dart #    (Manajemen state autentikasi pengguna)
+    │   │   └── cart_provider.dart #    (Manajemen state keranjang belanja)
+    │   ├── services/              # -> Kelas-kelas untuk layanan eksternal (API, database, dll.)
+    │   │   └── api_service.dart   #    (Contoh layanan untuk interaksi API)
+    │   └── main.dart              # -> Titik masuk utama aplikasi, konfigurasi Provider, dan routing
+    ├── linux/                     # Proyek spesifik Linux
+    ├── macos/                     # Proyek spesifik macOS
+    ├── test/                      # File untuk unit dan widget testing
+    ├── web/                       # Konfigurasi dan output untuk aplikasi web
+    ├── windows/                   # Proyek spesifik Windows
+    ├── .gitignore                 # File yang diabaikan oleh Git saat commit
+    ├── .metadata                  # Metadata internal proyek Flutter
+    ├── analysis_options.yaml      # Aturan linter dan analisis kode Dart
+    ├── devtools_options.yaml      # Opsi konfigurasi DevTools
+    ├── flutter_01.log             # Log internal Flutter
+    ├── pubspec.lock               # Catatan detail dependensi setelah `flutter pub get`
+    ├── pubspec.yaml               # File konfigurasi utama proyek, dependensi, dan aset
+    └── README.md                  # Dokumentasi proyek ini (file yang sedang Anda baca)
     ```
 
 2.  **Buat Model Produk (`lib/models/product.dart`):**
@@ -152,9 +181,9 @@ Kita akan mengatur folder proyek untuk menjaga kebersihan kode.
 
 Kita akan menggunakan Provider untuk mengelola state keranjang belanja.
 
-1.  **Buat Provider Keranjang (`lib/cart_provider.dart`):**
+1.  **Buat Provider Keranjang (`lib/providers/cart_provider.dart`):**
     ```dart
-    // lib/cart_provider.dart
+    // lib/providers/cart_provider.dart
     import 'package:flutter/material.dart';
     import 'package:collection/collection.dart';
     import '../models/cart_item.dart';
@@ -218,9 +247,9 @@ Kita akan menggunakan Provider untuk mengelola state keranjang belanja.
     }
     ```
 
-2.  **Buat Provider Autentikasi (`lib/auth_provider.dart`):**
+2.  **Buat Provider Autentikasi (`lib/providers/auth_provider.dart`):**
     ```dart
-    // lib/auth_provider.dart
+    // lib/providers/auth_provider.dart
     import 'package:flutter/material.dart';
 
     class AuthProvider extends ChangeNotifier {
@@ -254,7 +283,7 @@ Kita akan membuat halaman Login, Daftar Produk, Detail Produk, dan Keranjang.
     // lib/page/login_page.dart
     import 'package:flutter/material.dart';
     import 'package:provider/provider.dart';
-    import '../auth_provider.dart';
+    import '../providers/auth_provider.dart';
 
     class LoginPage extends StatefulWidget {
       const LoginPage({super.key});
@@ -373,7 +402,7 @@ Kita akan membuat halaman Login, Daftar Produk, Detail Produk, dan Keranjang.
     import 'dart:convert';
     import '../models/product.dart';
     import 'package:provider/provider.dart';
-    import '../cart_provider.dart';
+    import '../providers/cart_provider.dart';
 
     class ProductListPage extends StatefulWidget {
       const ProductListPage({super.key});
@@ -394,9 +423,9 @@ Kita akan membuat halaman Login, Daftar Produk, Detail Produk, dan Keranjang.
 
       Future<void> fetchProducts() async {
         try {
-          print('Fetching products from: https://dummyjson.com/products');
+          print('Fetching products from: [https://dummyjson.com/products](https://dummyjson.com/products)');
           final response = await http.get(
-            Uri.parse("https://dummyjson.com/products"),
+            Uri.parse("[https://dummyjson.com/products](https://dummyjson.com/products)"),
           );
           print('Response status code: ${response.statusCode}');
           if (response.statusCode == 200) {
@@ -694,13 +723,13 @@ Kita akan membuat halaman Login, Daftar Produk, Detail Produk, dan Keranjang.
 
 ---
 
-### **6. File: `lib/page/product_detail_page.dart`**
+### **8. File: `lib/page/product_detail_page.dart`**
 
 ```dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/product.dart';
-import '../cart_provider.dart';
+import '../providers/cart_provider.dart'; // Path disesuaikan
 
 class ProductDetailPage extends StatelessWidget {
   final Product product;
@@ -805,167 +834,167 @@ class ProductDetailPage extends StatelessWidget {
                             blurRadius: 10,
                             offset: const Offset(0, 6),
                           ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(
+                          product.thumbnail,
+                          width: 300,
+                          height: 300,
+                          fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Center(
+                              child: Icon(Icons.broken_image, size: 80, color: Colors.grey),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Text(
+                        product.title,
+                        style: const TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.amber,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    Container(
+                      width: 200,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Colors.greenAccent,
+                            Colors.teal,
                           ],
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.network(
-                            product.thumbnail,
-                            width: 300,
-                            height: 300,
-                            fit: BoxFit.contain,
-                            errorBuilder: (context, error, stackTrace) {
-                              return const Center(
-                                child: Icon(Icons.broken_image, size: 80, color: Colors.grey),
-                              );
-                            },
-                          ),
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
                       ),
-                      const SizedBox(height: 24),
-
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Text(
-                          product.title,
-                          style: const TextStyle(
-                            fontSize: 26,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.amber,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.attach_money,
+                            color: Colors.black87,
+                            size: 22,
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-
-                      Container(
-                        width: 200,
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 8,
-                          horizontal: 10,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          gradient: const LinearGradient(
-                            colors: [
-                              Colors.greenAccent,
-                              Colors.teal,
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.attach_money,
+                          const SizedBox(width: 6),
+                          Text(
+                            "Rp ${product.price}",
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
                               color: Colors.black87,
-                              size: 22,
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              "Rp ${product.price}",
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black87,
-                                shadows: [
-                                  Shadow(
-                                    color: Colors.black38,
-                                    offset: Offset(1, 1),
-                                    blurRadius: 4,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Text(
-                          product.description.isNotEmpty
-                              ? product.description
-                              : 'Deskripsi tidak tersedia.',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.grey[400],
-                          ),
-                          textAlign: TextAlign.justify,
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-
-                      Consumer<CartProvider>(
-                        builder: (context, cart, child) {
-                          return ElevatedButton(
-                            onPressed: () {
-                              cart.addToCart(
-                                product.id,
-                                product.title,
-                                product.price,
-                                product.thumbnail,
-                                product.brand,
-                                product.category,
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    '${product.title} ditambahkan ke keranjang!',
-                                  ),
-                                  duration: const Duration(seconds: 2),
-                                  behavior: SnackBarBehavior.floating,
-                                ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.deepOrange,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 50,
-                                vertical: 16,
-                              ),
-                              elevation: 12,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              shadowColor: Colors.black.withOpacity(0.4),
-                            ),
-                            child: const Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(Icons.shopping_cart, color: Colors.white),
-                                SizedBox(width: 12),
-                                Text(
-                                  'Tambah ke Keranjang',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.white,
-                                    shadows: [
-                                      Shadow(
-                                        color: Colors.black38,
-                                        offset: Offset(1, 1),
-                                        blurRadius: 4,
-                                      ),
-                                    ],
-                                  ),
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black38,
+                                  offset: Offset(1, 1),
+                                  blurRadius: 4,
                                 ),
                               ],
                             ),
-                          );
-                        },
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 20),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        product.description.isNotEmpty
+                            ? product.description
+                            : 'Deskripsi tidak tersedia.',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.grey[400],
+                        ),
+                        textAlign: TextAlign.justify,
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+
+                    Consumer<CartProvider>(
+                      builder: (context, cart, child) {
+                        return ElevatedButton(
+                          onPressed: () {
+                            cart.addToCart(
+                              product.id,
+                              product.title,
+                              product.price,
+                              product.thumbnail,
+                              product.brand,
+                              product.category,
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  '${product.title} ditambahkan ke keranjang!',
+                                ),
+                                duration: const Duration(seconds: 2),
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.deepOrange,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 50,
+                              vertical: 16,
+                            ),
+                            elevation: 12,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            shadowColor: Colors.black.withOpacity(0.4),
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.shopping_cart, color: Colors.white),
+                              SizedBox(width: 12),
+                              Text(
+                                'Tambah ke Keranjang',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                  shadows: [
+                                    Shadow(
+                                      color: Colors.black38,
+                                      offset: Offset(1, 1),
+                                      blurRadius: 4,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      );
-    }
+      ),
+    );
   }
+}
