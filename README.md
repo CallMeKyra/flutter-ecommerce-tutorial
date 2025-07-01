@@ -281,6 +281,7 @@ Kita akan membuat halaman Login, Daftar Produk, Detail Produk, dan Keranjang.
 1.  **Halaman Login (`lib/page/login_page.dart`):**
     ```dart
     // lib/page/login_page.dart
+    ![Screenshot Halaman Login](https://raw.githubusercontent.com/IG-coder-lab/flutter-ecommerce-tutorial/master/images/login%20page.png)
     import 'package:flutter/material.dart';
     import 'package:provider/provider.dart';
     import '../providers/auth_provider.dart';
