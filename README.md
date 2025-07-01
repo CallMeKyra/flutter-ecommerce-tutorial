@@ -88,7 +88,7 @@ Kita akan mengatur folder proyek untuk menjaga kebersihan kode.
     ├── test/                      # File untuk unit dan widget testing
     ├── web/                       # Konfigurasi dan output untuk aplikasi web
     ├── windows/                   # Proyek spesifik Windows
-    ├── .gitignore                 # File yang diabaikan oleh Git saat commit
+    ├── .gitignore                 # File yang diabaikan oleh Git
     ├── .metadata                  # Metadata internal proyek Flutter
     ├── analysis_options.yaml      # Aturan linter dan analisis kode Dart
     ├── devtools_options.yaml      # Opsi konfigurasi DevTools
