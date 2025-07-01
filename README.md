@@ -154,8 +154,6 @@ Kita akan mengatur folder proyek untuk menjaga kebersihan kode.
 
 3.  **Buat Model Item Keranjang (`lib/models/cart_item.dart`):**
     Model ini merepresentasikan item yang ditambahkan ke keranjang.
-
-    ![Screenshot Halaman Keranjang](https://imgur.com/7yW52fj)
     ```dart
     // lib/models/cart_item.dart
     class CartItem {
@@ -281,9 +279,6 @@ Kita akan menggunakan Provider untuk mengelola state keranjang belanja.
 Kita akan membuat halaman Login, Daftar Produk, Detail Produk, dan Keranjang.
 
 1.  **Halaman Login (`lib/page/login_page.dart`):**
-
-![Screenshot Halaman Login](https://imgur.com/a/KOqXiqw)
-
     ```dart
     // lib/page/login_page.dart
     import 'package:flutter/material.dart';
@@ -400,8 +395,6 @@ Kita akan membuat halaman Login, Daftar Produk, Detail Produk, dan Keranjang.
 
 2.  **Halaman Daftar Produk (`lib/page/product_list_page.dart`):**
     Ini adalah halaman inti dengan tampilan grid produk dan desain yang sudah kita poles.
-
-    ![Screenshot Halaman Daftar Produk](https://imgur.com/kE32GcU)
     ```dart
     // lib/page/product_list_page.dart
     import 'package:flutter/material.dart';
@@ -731,9 +724,6 @@ Kita akan membuat halaman Login, Daftar Produk, Detail Produk, dan Keranjang.
 ---
 
 ### **8. File: `lib/page/product_detail_page.dart`**
-
-![Screenshot Halaman Detail Produk](https://imgur.com/fDNuD1y)
-
 ```dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
