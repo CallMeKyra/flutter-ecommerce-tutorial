@@ -154,6 +154,8 @@ Kita akan mengatur folder proyek untuk menjaga kebersihan kode.
 
 3.  **Buat Model Item Keranjang (`lib/models/cart_item.dart`):**
     Model ini merepresentasikan item yang ditambahkan ke keranjang.
+
+    ![Screenshot Halaman Keranjang](https://raw.githubusercontent.com/IG-coder-lab/flutter-ecommerce-tutorial/master/images/keranjang.png)
     ```dart
     // lib/models/cart_item.dart
     class CartItem {
@@ -398,6 +400,8 @@ Kita akan membuat halaman Login, Daftar Produk, Detail Produk, dan Keranjang.
 
 2.  **Halaman Daftar Produk (`lib/page/product_list_page.dart`):**
     Ini adalah halaman inti dengan tampilan grid produk dan desain yang sudah kita poles.
+
+    ![Screenshot Halaman Daftar Produk](https://raw.githubusercontent.com/IG-coder-lab/flutter-ecommerce-tutorial/master/images/list%20page.png)
     ```dart
     // lib/page/product_list_page.dart
     import 'package:flutter/material.dart';
@@ -727,6 +731,8 @@ Kita akan membuat halaman Login, Daftar Produk, Detail Produk, dan Keranjang.
 ---
 
 ### **8. File: `lib/page/product_detail_page.dart`**
+
+![Screenshot Halaman Detail Produk](https://raw.githubusercontent.com/IG-coder-lab/flutter-ecommerce-tutorial/master/images/detail%20page.png)
 
 ```dart
 import 'package:flutter/material.dart';
