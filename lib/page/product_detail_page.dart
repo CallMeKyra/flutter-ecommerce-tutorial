@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/product.dart';
-import '../cart_provider.dart';
+import '../providers/cart_provider.dart';
 
 class ProductDetailPage extends StatelessWidget {
   final Product product;
@@ -17,7 +17,7 @@ class ProductDetailPage extends StatelessWidget {
             colors: [
               Colors.black87,
               Colors.grey[850]!,
-            ], // **Gradasi lebih mewah**
+            ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -26,18 +26,18 @@ class ProductDetailPage extends StatelessWidget {
           children: [
             AppBar(
               leading: IconButton(
-                icon: Icon(
+                icon: const Icon(
                   Icons.arrow_back_ios_new,
-                  color: Colors.deepOrange,
+                  color: Colors.amberAccent,
                   size: 28,
-                ), // **Ikon kembali lebih eksklusif**
+                ),
                 tooltip: "Kembali",
                 splashRadius: 24,
                 onPressed: () => Navigator.pop(context),
               ),
               title: Text(
                 product.title,
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.amber,
                 ),
@@ -48,12 +48,12 @@ class ProductDetailPage extends StatelessWidget {
                 Consumer<CartProvider>(
                   builder: (context, cart, child) {
                     return Padding(
-                      padding: EdgeInsets.only(right: 16),
+                      padding: const EdgeInsets.only(right: 16),
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
                           IconButton(
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.shopping_cart,
                               size: 42,
                               color: Colors.amberAccent,
@@ -71,7 +71,7 @@ class ProductDetailPage extends StatelessWidget {
                                 backgroundColor: Colors.red,
                                 child: Text(
                                   cart.totalQuantity.toString(),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 9,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
@@ -88,53 +88,48 @@ class ProductDetailPage extends StatelessWidget {
             ),
             Expanded(
               child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                          12,
-                        ), // **Border dan shadow mengikuti bentuk gambar**
+                        borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color:
-                              Colors
-                                  .white70, // **Warna putih krem yang lebih lembut**
-                          width: 3, // **Ketebalan border yang pas**
+                          color: Colors.white70,
+                          width: 3,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(
-                              0.5,
-                            ), // **Shadow lebih tajam**
+                            color: Colors.black.withOpacity(0.5),
                             spreadRadius: 4,
                             blurRadius: 10,
-                            offset: Offset(
-                              0,
-                              6,
-                            ), // **Bayangan lebih jelas tanpa terlalu gelap**
+                            offset: const Offset(0, 6),
                           ),
                         ],
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(
-                          12,
-                        ), // **Membuat sudut lebih halus**
+                        borderRadius: BorderRadius.circular(12),
                         child: Image.network(
                           product.thumbnail,
-                          width: 250, // **Ukuran tetap proporsional**
-                          height: 250,
-                          fit:
-                              BoxFit
-                                  .contain, // **Menjaga proporsi gambar tanpa distorsi**
+                          width: 300,
+                          height: 300,
+                          fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Center(
+                              child: Icon(Icons.broken_image, size: 80, color: Colors.grey),
+                            );
+                          },
                         ),
                       ),
                     ),
-                    SizedBox(height: 12),
+                    const SizedBox(height: 24),
+
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
                         product.title,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 26,
                           fontWeight: FontWeight.bold,
                           color: Colors.amber,
@@ -142,80 +137,69 @@ class ProductDetailPage extends StatelessWidget {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    SizedBox(height: 10),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24),
-                      child: Column(
+                    const SizedBox(height: 16),
+
+                    Container(
+                      width: 200,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Colors.greenAccent,
+                            Colors.teal,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
-                            width:
-                                200, // **Lebar border lebih pendek agar sesuai dengan teks harga**
-                            padding: EdgeInsets.symmetric(
-                              vertical: 8,
-                              horizontal: 10,
-                            ), // **Padding lebih kecil agar pas**
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(
-                                8,
-                              ), // **Bentuk tetap elegan**
-                              gradient: LinearGradient(
-                                colors: [
-                                  Colors.greenAccent,
-                                  Colors.teal,
-                                ], // **Gradasi tetap eksklusif**
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.attach_money,
-                                  color: Colors.black87,
-                                  size: 22,
-                                ), // **Ukuran ikon lebih kecil**
-                                SizedBox(
-                                  width: 6,
-                                ), // **Menyesuaikan jarak agar lebih harmonis**
-                                Text(
-                                  "Rp ${product.price}",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.black87,
-                                    shadows: [
-                                      Shadow(
-                                        color: Colors.black.withOpacity(
-                                          0.3,
-                                        ), // **Shadow lebih halus**
-                                        offset: Offset(1, 1),
-                                        blurRadius: 4,
-                                      ),
-                                    ],
-                                  ),
+                          const Icon(
+                            Icons.attach_money,
+                            color: Colors.black87,
+                            size: 22,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            "Rp ${product.price}",
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black87,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black38,
+                                  offset: Offset(1, 1),
+                                  blurRadius: 4,
                                 ),
                               ],
-                            ),
-                          ),
-                          SizedBox(height: 12),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: Text(
-                              product.description.isNotEmpty
-                                  ? product.description
-                                  : 'Deskripsi tidak tersedia.',
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.grey[400],
-                              ),
-                              textAlign: TextAlign.justify,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 24),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        product.description.isNotEmpty
+                            ? product.description
+                            : 'Deskripsi tidak tersedia.',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.grey[400],
+                        ),
+                        textAlign: TextAlign.justify,
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+
                     Consumer<CartProvider>(
                       builder: (context, cart, child) {
                         return ElevatedButton(
@@ -224,34 +208,34 @@ class ProductDetailPage extends StatelessWidget {
                               product.id,
                               product.title,
                               product.price,
+                              product.thumbnail,
+                              product.brand,
+                              product.category,
                             );
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
                                   '${product.title} ditambahkan ke keranjang!',
                                 ),
-                                duration: Duration(seconds: 2),
+                                duration: const Duration(seconds: 2),
                                 behavior: SnackBarBehavior.floating,
                               ),
                             );
                           },
                           style: ElevatedButton.styleFrom(
                             foregroundColor: Colors.white,
-                            backgroundColor:
-                                Colors.deepOrange, // **Warna lebih premium**
-                            padding: EdgeInsets.symmetric(
+                            backgroundColor: Colors.deepOrange,
+                            padding: const EdgeInsets.symmetric(
                               horizontal: 50,
                               vertical: 16,
                             ),
-                            elevation: 12, // **Efek bayangan lebih mewah**
+                            elevation: 12,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            shadowColor: Colors.black.withOpacity(
-                              0.4,
-                            ), // **Menambahkan shadow**
+                            shadowColor: Colors.black.withOpacity(0.4),
                           ),
-                          child: Row(
+                          child: const Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(Icons.shopping_cart, color: Colors.white),
@@ -263,7 +247,7 @@ class ProductDetailPage extends StatelessWidget {
                                   color: Colors.white,
                                   shadows: [
                                     Shadow(
-                                      color: Colors.black.withOpacity(0.3),
+                                      color: Colors.black38,
                                       offset: Offset(1, 1),
                                       blurRadius: 4,
                                     ),
@@ -275,7 +259,7 @@ class ProductDetailPage extends StatelessWidget {
                         );
                       },
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),

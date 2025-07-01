@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../models/product.dart';
 import 'package:provider/provider.dart';
-import '../cart_provider.dart';
+import '../providers/cart_provider.dart';
 
 class ProductListPage extends StatefulWidget {
   const ProductListPage({super.key});
@@ -23,18 +23,55 @@ class _ProductListPageState extends State<ProductListPage> {
   }
 
   Future<void> fetchProducts() async {
-    final response = await http.get(
-      Uri.parse("https://dummyjson.com/products"),
-    );
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      setState(() {
-        products =
-            (data['products'] as List)
+    try {
+      print('Fetching products from: https://dummyjson.com/products');
+      final response = await http.get(
+        Uri.parse("https://dummyjson.com/products"),
+      );
+      print('Response status code: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data != null && data['products'] is List) {
+          print('Response body received. Number of products: ${data['products'].length}');
+          setState(() {
+            products = (data['products'] as List)
                 .map((json) => Product.fromJson(json))
                 .toList();
+            isLoading = false;
+          });
+          print('Products loaded successfully. Total products: ${products.length}');
+        } else {
+          print('Error: "products" key not found or not a list in JSON response.');
+          setState(() {
+            isLoading = false;
+          });
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Error: Invalid product data format from API.')),
+            );
+          }
+        }
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        if (mounted) {
+          print('Failed to load products. Status: ${response.statusCode}, Body: ${response.body}');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to load products: ${response.statusCode}')),
+          );
+        }
+      }
+    } catch (e) {
+      setState(() {
         isLoading = false;
       });
+      if (mounted) {
+        print('Error fetching products: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
     }
   }
 
@@ -114,156 +151,168 @@ class _ProductListPageState extends State<ProductListPage> {
               ],
             ),
             Expanded(
-              child:
-                  isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : Scrollbar(
-                        thickness: 6,
-                        radius: const Radius.circular(10),
-                        thumbVisibility: true,
-                        trackVisibility: true,
-                        child: ListView.builder(
-                          itemCount: products.length,
-                          itemBuilder: (context, index) {
-                            final product = products[index];
-                            return Card(
-                              elevation: 6,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              color: Colors.black.withOpacity(0.2),
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    '/product-detail',
-                                    arguments: product,
-                                  );
-                                },
-                                child: Container(
-                                  height: 80,
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 8,
-                                    horizontal: 12,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator(color: Colors.amber))
+                  : GridView.builder(
+                      padding: const EdgeInsets.all(8.0),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 5,
+                        crossAxisSpacing: 8.0,
+                        mainAxisSpacing: 8.0,
+                        childAspectRatio: 0.8,
+                      ),
+                      itemCount: products.length,
+                      itemBuilder: (context, index) {
+                        final product = products[index];
+                        return Card(
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            side: BorderSide(
+                              color: Colors.amber.withOpacity(0.3),
+                              width: 1.0,
+                            ),
+                          ),
+                          color: const Color(0xFF333333),
+                          clipBehavior: Clip.antiAlias,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/product-detail',
+                                arguments: product,
+                              );
+                            },
+                            child: Stack(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: Container(
+                                        width: double.infinity,
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                          border: Border.all(
-                                            color: Colors.white70,
-                                            width: 2,
+                                          color: const Color(0xFFFCF5ED),
+                                          borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(10),
+                                            topRight: Radius.circular(10),
                                           ),
                                           boxShadow: [
                                             BoxShadow(
-                                              color: Colors.black.withOpacity(
-                                                0.4,
-                                              ),
-                                              spreadRadius: 2,
-                                              blurRadius: 8,
-                                              offset: const Offset(0, 4),
+                                              color: Colors.black.withOpacity(0.3),
+                                              spreadRadius: 1,
+                                              blurRadius: 3,
+                                              offset: const Offset(0, 2),
                                             ),
                                           ],
                                         ),
-                                        padding: const EdgeInsets.all(6),
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                          child: Image.network(
-                                            product.thumbnail,
-                                            width: 80,
-                                            height: 100,
-                                            fit: BoxFit.contain,
-                                          ),
+                                        clipBehavior: Clip.antiAlias,
+                                        child: Image.network(
+                                          product.thumbnail,
+                                          fit: BoxFit.contain,
+                                          errorBuilder: (context, error, stackTrace) {
+                                            return const Center(
+                                              child: Icon(Icons.broken_image, size: 30, color: Colors.grey),
+                                            );
+                                          },
                                         ),
                                       ),
-                                      const SizedBox(width: 10),
-                                      Expanded(
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Padding(
+                                        padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 6.0),
                                         child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              product.title,
+                                              (product.category).toUpperCase(),
                                               style: const TextStyle(
-                                                fontSize: 14,
+                                                fontSize: 10,
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.amber,
                                               ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
                                             ),
-                                            const SizedBox(height: 4),
                                             Text(
-                                              "Rp ${product.price}",
+                                              product.title,
                                               style: TextStyle(
-                                                fontSize: 12,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
                                                 color: Colors.grey[300],
-                                                shadows: [
-                                                  Shadow(
-                                                    color: Colors.black
-                                                        .withOpacity(0.3),
-                                                    offset: const Offset(1, 1),
-                                                    blurRadius: 4,
-                                                  ),
-                                                ],
+                                              ),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            Align(
+                                              alignment: Alignment.bottomLeft,
+                                              child: Text(
+                                                "Rp ${product.price}",
+                                                style: const TextStyle(
+                                                  fontSize: 18,
+                                                  color: Colors.amberAccent,
+                                                  shadows: [
+                                                    Shadow(
+                                                      color: Colors.black,
+                                                      offset: Offset(0.5, 0.5),
+                                                      blurRadius: 1,
+                                                    ),
+                                                  ],
+                                                ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
                                           ],
                                         ),
                                       ),
-                                      Consumer<CartProvider>(
-                                        builder: (context, cart, child) {
-                                          return Align(
-                                            alignment: Alignment.center,
-                                            child: IconButton(
-                                              icon: const Icon(
-                                                Icons.add_shopping_cart,
-                                                size: 22,
-                                                color: Colors.amberAccent,
-                                              ),
-                                              onPressed: () {
-                                                cart.addToCart(
-                                                  product.id,
-                                                  product.title,
-                                                  product.price,
-                                                );
-                                                ScaffoldMessenger.of(
-                                                  context,
-                                                ).showSnackBar(
-                                                  SnackBar(
-                                                    content: Text(
-                                                      '${product.title} ditambahkan ke keranjang!',
-                                                    ),
-                                                    duration: const Duration(
-                                                      seconds: 2,
-                                                    ),
-                                                    behavior:
-                                                        SnackBarBehavior
-                                                            .floating,
-                                                  ),
-                                                );
-                                              },
+                                    ),
+                                  ],
+                                ),
+                                Positioned(
+                                  bottom: 8,
+                                  right: 8,
+                                  child: Consumer<CartProvider>(
+                                    builder: (context, cart, child) {
+                                      return IconButton(
+                                        icon: const Icon(
+                                          Icons.add_shopping_cart,
+                                          size: 24,
+                                          color: Colors.amberAccent,
+                                        ),
+                                        padding: EdgeInsets.zero,
+                                        constraints: const BoxConstraints(minWidth: 24, minHeight: 24),
+                                        onPressed: () {
+                                          cart.addToCart(
+                                            product.id,
+                                            product.title,
+                                            product.price,
+                                            product.thumbnail,
+                                            product.brand,
+                                            product.category,
+                                          );
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text('${product.title} ditambahkan!', style: const TextStyle(fontSize: 12, color: Colors.white)),
+                                              backgroundColor: Colors.green[700],
+                                              duration: const Duration(seconds: 1),
+                                              behavior: SnackBarBehavior.floating,
                                             ),
                                           );
                                         },
-                                      ),
-                                    ],
+                                      );
+                                    },
                                   ),
                                 ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
             ),
           ],
         ),

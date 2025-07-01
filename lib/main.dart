@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'auth_provider.dart';
-import 'cart_provider.dart';
+import 'providers/auth_provider.dart';
+import 'providers/cart_provider.dart';
 import 'page/login_page.dart';
 import 'page/cart_page.dart';
 import 'page/product_list_page.dart';
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'MyStore App',
-      theme: ThemeData.light(), // Kembali ke tema default tanpa perubahan warna
+      theme: ThemeData.light(),
       initialRoute: '/',
       onGenerateRoute: (settings) {
         if (settings.name == '/product-detail') {
@@ -37,8 +37,8 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(
               builder:
                   (context) => Scaffold(
-                    appBar: AppBar(title: Text('Error')),
-                    body: Center(child: Text('Produk tidak ditemukan!')),
+                    appBar: AppBar(title: const Text('Error')),
+                    body: const Center(child: Text('Produk tidak ditemukan!')),
                   ),
             );
           }
