@@ -182,8 +182,14 @@ class CartItem {
 }
 ```
 
-### `lib/main.dart`
-Titik masuk aplikasi Flutter dan pengaturan routing serta provider.
+---
+
+
+## 📄 file utama
+
+### `lib/main.dart` 
+File utama aplikasi Flutter. Berfungsi sebagai titik awal (entry point) dari seluruh proyek, mengatur routing, tema, dan penyedia state management secara global.
+ dan konfigurasi routing serta penyedia state global.
 
 ```dart
 import 'package:flutter/material.dart';
@@ -214,6 +220,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter E-Commerce App',
+      theme: ThemeData(
+        useMaterial3: true,
+        colorSchemeSeed: Colors.deepPurple,
+      ),
       initialRoute: '/',
       routes: {
         '/': (context) => const LoginPage(),
@@ -233,7 +245,74 @@ class MyApp extends StatelessWidget {
   }
 }
 ```
+
 ---
+
+
+### `lib/page/login_page.dart`
+Halaman login sederhana yang memungkinkan pengguna masuk ke aplikasi menggunakan username dan password.
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
+
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Login')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: _usernameController,
+              decoration: const InputDecoration(labelText: 'Username'),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: _passwordController,
+              obscureText: true,
+              decoration: const InputDecoration(labelText: 'Password'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                authProvider.login(_usernameController.text, _passwordController.text);
+                if (authProvider.isLoggedIn) {
+                  Navigator.pushReplacementNamed(context, '/products');
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Login gagal')),
+                  );
+                }
+              },
+              child: const Text('Login'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
+
+---
+
+
 ### `lib/page/product_list_page.dart`
 Menampilkan daftar produk dari API dan tombol tambah ke keranjang.
 
@@ -318,6 +397,8 @@ class _ProductListPageState extends State<ProductListPage> {
 ```
 
 ---
+
+
 ### `lib/page/product_detail_page.dart`
 Menampilkan detail produk secara lengkap dan tombol beli.
 
@@ -369,6 +450,8 @@ class ProductDetailPage extends StatelessWidget {
 ```
 
 ---
+
+
 ### `lib/page/cart_page.dart`
 Menampilkan semua item di keranjang dan total harga.
 
@@ -421,6 +504,8 @@ class CartPage extends StatelessWidget {
 ```
 
 ---
+
+
 ### `lib/services/api_service.dart`
 Layanan untuk mengambil data produk dari API eksternal.
 
