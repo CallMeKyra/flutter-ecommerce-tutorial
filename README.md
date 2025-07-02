@@ -315,4 +315,105 @@ class _ProductListPageState extends State<ProductListPage> {
   }
 }
 ---
+### `lib/page/product_detail_page.dart`
+Menampilkan detail produk secara lengkap dan tombol beli.
 
+```dart
+import 'package:flutter/material.dart';
+import '../models/product.dart';
+import '../models/cart_item.dart';
+import 'package:provider/provider.dart';
+import '../providers/cart_provider.dart';
+
+class ProductDetailPage extends StatelessWidget {
+  final Product product;
+  const ProductDetailPage({super.key, required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    final cart = Provider.of<CartProvider>(context);
+    return Scaffold(
+      appBar: AppBar(title: Text(product.title)),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Image.network(product.thumbnail, height: 200),
+            const SizedBox(height: 10),
+            Text(product.description),
+            const SizedBox(height: 10),
+            Text('Rp ${product.price}', style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                cart.addToCart(CartItem(
+                  productId: product.id,
+                  title: product.title,
+                  price: product.price,
+                  thumbnail: product.thumbnail,
+                  brand: product.brand,
+                  category: product.category,
+                ));
+              },
+              child: const Text('Beli Sekarang'),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
+
+### `lib/page/cart_page.dart`
+Menampilkan semua item di keranjang dan total harga.
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/cart_provider.dart';
+
+class CartPage extends StatelessWidget {
+  const CartPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final cart = Provider.of<CartProvider>(context);
+    return Scaffold(
+      appBar: AppBar(title: const Text('Keranjang')),
+      body: cart.items.isEmpty
+          ? const Center(child: Text('Keranjang kosong'))
+          : ListView.builder(
+              itemCount: cart.items.length,
+              itemBuilder: (_, i) {
+                final item = cart.items[i];
+                return ListTile(
+                  leading: Image.network(item.thumbnail, width: 50),
+                  title: Text(item.title),
+                  subtitle: Text('Rp ${item.price} x ${item.quantity}'),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () => cart.removeItem(item.productId),
+                  ),
+                );
+              },
+            ),
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Total: Rp ${cart.totalPrice.toStringAsFixed(0)}'),
+            ElevatedButton(
+              onPressed: cart.clearCart,
+              child: const Text('Checkout'),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
+
+---
