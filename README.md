@@ -7,4 +7,232 @@
 
 > Proyek ini adalah aplikasi e-commerce sederhana dengan desain premium dan fitur keranjang belanja, dibangun menggunakan Flutter. Cocok untuk pemula hingga menengah!
 
-... (semua isi README lanjutan yang sudah dibuat sebelumnya akan disatukan di sini) ...
+---
+
+## 📦 Dependencies yang Digunakan
+
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
+  provider: ^6.0.5
+  http: ^1.1.0
+  collection: ^1.18.0
+  cupertino_icons: ^1.0.2
+```
+
+---
+
+## 🧱 Struktur Folder
+
+Struktur folder utama dalam proyek:
+
+```
+lib/
+├── main.dart                 # Titik masuk aplikasi dan routing
+├── models/                  # Menyimpan model data
+│   ├── product.dart         # Model data produk
+│   └── cart_item.dart       # Model data item dalam keranjang
+├── page/                    # Halaman-halaman antarmuka pengguna
+│   ├── login_page.dart      # Halaman login pengguna
+│   ├── product_list_page.dart # Daftar produk dari API
+│   ├── product_detail_page.dart # Halaman detail produk
+│   └── cart_page.dart       # Halaman keranjang belanja
+├── providers/               # State management
+│   ├── auth_provider.dart   # Manajemen autentikasi login
+│   └── cart_provider.dart   # Manajemen data keranjang belanja
+```
+
+---
+
+## 📄 Kode dan Penjelasan File
+
+### `lib/providers/auth_provider.dart`
+Provider ini digunakan untuk autentikasi login sederhana.
+
+```dart
+import 'package:flutter/material.dart';
+
+class AuthProvider extends ChangeNotifier {
+  bool _isLoggedIn = false;
+  bool get isLoggedIn => _isLoggedIn;
+
+  void login(String username, String password) {
+    if (username == 'user' && password == 'password') {
+      _isLoggedIn = true;
+      notifyListeners();
+    }
+  }
+
+  void logout() {
+    _isLoggedIn = false;
+    notifyListeners();
+  }
+}
+```
+
+### `lib/providers/cart_provider.dart`
+Provider ini digunakan untuk mengelola data keranjang belanja.
+
+```dart
+import 'package:flutter/material.dart';
+import '../models/cart_item.dart';
+
+class CartProvider extends ChangeNotifier {
+  final List<CartItem> _items = [];
+
+  List<CartItem> get items => List.unmodifiable(_items);
+
+  double get totalPrice =>
+      _items.fold(0.0, (sum, item) => sum + item.price * item.quantity);
+
+  void addToCart(CartItem item) {
+    final index = _items.indexWhere((e) => e.productId == item.productId);
+    if (index >= 0) {
+      _items[index].quantity++;
+    } else {
+      _items.add(item);
+    }
+    notifyListeners();
+  }
+
+  void removeItem(int productId) {
+    _items.removeWhere((item) => item.productId == productId);
+    notifyListeners();
+  }
+
+  void clearCart() {
+    _items.clear();
+    notifyListeners();
+  }
+}
+```
+
+### `lib/models/product.dart`
+Model data untuk produk yang digunakan dalam daftar dan detail produk.
+
+```dart
+class Product {
+  final int id;
+  final String title;
+  final String description;
+  final String thumbnail;
+  final double price;
+  final String category;
+  final double rating;
+  final String? brand;
+  final double discountPercentage;
+  final int stock;
+  final List<String> images;
+
+  Product({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.thumbnail,
+    required this.price,
+    required this.category,
+    required this.rating,
+    this.brand,
+    required this.discountPercentage,
+    required this.stock,
+    required this.images,
+  });
+
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      id: json['id'],
+      title: json['title'],
+      description: json['description'],
+      thumbnail: json['thumbnail'],
+      price: (json['price'] as num).toDouble(),
+      category: json['category'],
+      rating: (json['rating'] as num).toDouble(),
+      brand: json['brand'],
+      discountPercentage: (json['discountPercentage'] as num).toDouble(),
+      stock: json['stock'],
+      images: List<String>.from(json['images']),
+    );
+  }
+}
+```
+
+### `lib/models/cart_item.dart`
+Model data untuk item yang ditambahkan ke keranjang.
+
+```dart
+class CartItem {
+  final int productId;
+  final String title;
+  final double price;
+  final String thumbnail;
+  final String? brand;
+  final String? category;
+  int quantity;
+
+  CartItem({
+    required this.productId,
+    required this.title,
+    required this.price,
+    required this.thumbnail,
+    this.brand,
+    this.category,
+    this.quantity = 1,
+  });
+}
+```
+
+### `lib/main.dart`
+Titik masuk aplikasi Flutter dan pengaturan routing serta provider.
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'providers/auth_provider.dart';
+import 'providers/cart_provider.dart';
+import 'page/login_page.dart';
+import 'page/product_list_page.dart';
+import 'page/product_detail_page.dart';
+import 'page/cart_page.dart';
+import 'models/product.dart';
+
+void main() {
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const LoginPage(),
+        '/products': (context) => const ProductListPage(),
+        '/cart': (context) => const CartPage(),
+      },
+      onGenerateRoute: (settings) {
+        if (settings.name == '/product-detail') {
+          final product = settings.arguments as Product;
+          return MaterialPageRoute(
+            builder: (_) => ProductDetailPage(product: product),
+          );
+        }
+        return null;
+      },
+    );
+  }
+}
+```
+
+---
+
