@@ -233,6 +233,86 @@ class MyApp extends StatelessWidget {
   }
 }
 ```
+### `lib/page/product_list_page.dart`
+Menampilkan daftar produk dari API dan tombol tambah ke keranjang.
 
+```dart
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/cart_provider.dart';
+import '../models/cart_item.dart';
+import '../models/product.dart';
+import '../services/api_service.dart';
+import 'product_detail_page.dart';
+
+class ProductListPage extends StatefulWidget {
+  const ProductListPage({super.key});
+
+  @override
+  State<ProductListPage> createState() => _ProductListPageState();
+}
+
+class _ProductListPageState extends State<ProductListPage> {
+  List<Product> products = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchProducts();
+  }
+
+  Future<void> fetchProducts() async {
+    final data = await ApiService.fetchProducts();
+    setState(() => products = data);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cart = Provider.of<CartProvider>(context);
+    return Scaffold(
+      appBar: AppBar(title: const Text('Produk')),
+      body: GridView.builder(
+        padding: const EdgeInsets.all(10),
+        itemCount: products.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 0.7,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+        ),
+        itemBuilder: (_, i) {
+          final p = products[i];
+          return GestureDetector(
+            onTap: () => Navigator.pushNamed(
+              context,
+              '/product-detail',
+              arguments: p,
+            ),
+            child: Card(
+              child: Column(
+                children: [
+                  Expanded(child: Image.network(p.thumbnail)),
+                  Text(p.title),
+                  Text('Rp ${p.price}'),
+                  TextButton(
+                    onPressed: () => cart.addToCart(CartItem(
+                      productId: p.id,
+                      title: p.title,
+                      price: p.price,
+                      thumbnail: p.thumbnail,
+                      brand: p.brand,
+                      category: p.category,
+                    )),
+                    child: const Text('Tambah ke Keranjang'),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
 ---
 
