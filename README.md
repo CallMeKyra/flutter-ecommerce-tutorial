@@ -233,6 +233,7 @@ class MyApp extends StatelessWidget {
   }
 }
 ```
+---
 ### `lib/page/product_list_page.dart`
 Menampilkan daftar produk dari API dan tombol tambah ke keranjang.
 
@@ -314,6 +315,8 @@ class _ProductListPageState extends State<ProductListPage> {
     );
   }
 }
+```
+
 ---
 ### `lib/page/product_detail_page.dart`
 Menampilkan detail produk secara lengkap dan tombol beli.
@@ -365,6 +368,7 @@ class ProductDetailPage extends StatelessWidget {
 }
 ```
 
+---
 ### `lib/page/cart_page.dart`
 Menampilkan semua item di keranjang dan total harga.
 
